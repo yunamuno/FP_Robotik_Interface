@@ -1,0 +1,71 @@
+<!--SECCIÓN 400: Encabezado del Documento y Metadatos del Simulador-->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Simulador de Trayectoria TCP</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--SECCIÓN 401: Carga de la Hoja de Estilo del Simulador-->
+    <link rel="stylesheet" href="simulator.style.css">
+</head>
+<!--SECCIÓN 402: Cuerpo del Documento del Simulador-->
+<body>
+    
+    <!--SECCIÓN 403: Panel Flotante de Información y Controles de la Simulación-->
+    <div id="info-panel">
+        <h1>Simulador de Trayectoria TCP</h1>
+        
+        <!--SECCIÓN 404: Botones de Control de la Simulación (Simular, Limpiar)-->
+        <div id="controls">
+            <button id="runSimulationBtn">1. Simular Programa</button>
+            <button id="clearTrajectoryBtn">2. Limpiar Trayectoria</button>
+        </div>
+        
+        <!--SECCIÓN 405: Indicadores de Estado y Bloque Actual-->
+        <div id="status">
+            <strong>Historial de ejecución:</strong>
+            <div id="status-text"></div>
+        </div>
+        <div id="current-block-display">
+            <strong>Bloque Actual:</strong> <span id="current-block-text">-</span>
+        </div>
+        
+        <!--SECCIÓN 406: Leyenda de Colores para los Tipos de Movimiento-->
+        <div id="legend">
+            <strong>Leyenda:</strong>
+            <div class="legend-item">
+                <span class="legend-color" style="background-color: #00ff00;"></span>
+                <span>MoveL (Lineal)</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-color" style="background-color: #0000ff;"></span>
+                <span>MoveJ (Articular)</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-color" style="background-color: #ff00ff;"></span>
+                <span>MoveC (Circular)</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-color" style="background-color: #000000;"></span>
+                <span>Punto de Parada</span>
+            </div>
+        </div>
+    </div>
+    <!--SECCIÓN 407: Contenedor para la Escena 3D (WebGL)-->
+    <div id="webgl-container"></div>
+
+    <!--SECCIÓN 408: Mapeo de Importaciones (Import Map) para Cargar Módulos de Three.js-->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.157.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.157.0/examples/jsm/"
+            }
+        }
+    </script>
+    
+    <!--SECCIÓN 409: Carga del Script Principal del Simulador (como módulo)-->
+    <script type="module" src="simulator.js"></script>
+
+</body>
+</html>
