@@ -1,0 +1,376 @@
+<!--SECCIÓN 400: Encabezado del Documento y Metadatos del Simulador-->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Simulador de Trayectoria TCP</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--SECCIÓN 401: Carga de la Hoja de Estilo del Simulador-->
+    <link rel="stylesheet" href="simulator.style.css">
+</head>
+<!--SECCIÓN 402: Cuerpo del Documento del Simulador-->
+<body>
+    
+    <!--SECCIÓN 403: Panel Flotante de Información y Controles de la Simulación-->
+    <div id="info-panel">
+        <h1>Simulador de Trayectoria TCP</h1>
+        
+        <!--SECCIÓN 404: Botones de Control de la Simulación (Simular, Limpiar)-->
+        <div id="controls">
+            <button id="runSimulationBtn">1. Simular Programa</button>
+            <button id="pauseSimulationBtn" disabled>2. Pausar</button>
+            <button id="clearTrajectoryBtn">3. Limpiar Trayectoria</button>
+        </div>
+        
+        <!--SECCIÓN 405: Indicadores de Estado y Bloque Actual-->
+        <div id="status">
+            <strong>Historial de ejecución:</strong>
+            <div id="status-text"></div>
+        </div>
+        <div id="current-block-display">
+            <strong>Bloque Actual:</strong> <span id="current-block-text">-</span>
+        </div>
+        
+        <!--SECCIÓN 405b: Tabla rápida de comparación plan vs real-->
+        <div id="comparison-panel">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:2px;">
+              <strong>Comparación plan vs real</strong>
+              <button id="comparisonHelpButton" type="button" title="Ayuda: simulación y comparación real" style="font-size:11px;padding:3px 7px;border:1px solid #94a3b8;border-radius:6px;background:#f8fafc;color:#1f2937;font-weight:500;cursor:pointer;opacity:1;white-space:nowrap;">? Ayuda</button>
+            </div>
+                        <div id="robot-live-status" class="robot-live-status idle" title="Estado de recepción de ejecuciones reales del robot. Cambia cuando llegan mensajes MQTT válidos con snapshot_short reconocido.">
+                            Robot: ⚪ esperando ejecuciones reales
+                        </div>
+            <div style="margin: 6px 0; display: flex; gap: 6px; flex-wrap: wrap;">
+                <button id="btnCompareMqttRun" type="button" title="Compara la última ejecución real recibida por MQTT con el plan generado del programa actual.">Comparar última ejecución con el plan actual</button>
+            </div>
+            <div class="comparison-secondary-title">
+              Opcional: comparar con ejecuciones anteriores
+            </div>
+            <div style="margin: 0 0 6px 0; display: flex; gap: 6px; flex-wrap: wrap; align-items: center;">
+                <select id="persistedRunSelect" style="max-width: 340px;"></select>
+                                <button id="btnCompareSelectedRun" type="button" title="Compara el programa actual con la ejecución seleccionada en la lista.">Comparar ejecución seleccionada</button>
+            </div>
+            <!-- Modal de ayuda -->
+            <div id="comparisonHelpModal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.45);align-items:center;justify-content:center;">
+              <div style="background:#fff;border-radius:10px;padding:18px 22px;max-width:720px;width:90%;max-height:80vh;overflow-y:auto;box-shadow:0 8px 32px rgba(0,0,0,0.22);position:relative;font-size:13px;line-height:1.5;color:#333;">
+                <button id="comparisonHelpModalClose" type="button" title="Cerrar" style="position:absolute;top:10px;right:14px;font-size:18px;background:none;border:none;cursor:pointer;color:#888;">✕</button>
+                <h3 style="margin:0 0 10px 0;font-size:15px;">Ayuda: simulación y comparación real</h3>
+
+                <strong>¿Qué hace la simulación?</strong>
+                <p>La simulación representa visualmente el programa creado con bloques.</p>
+                <p>Sirve para:</p>
+                <ul>
+                  <li>visualizar movimientos</li>
+                  <li>comprobar la secuencia del programa</li>
+                  <li>detectar errores básicos</li>
+                  <li>entender el funcionamiento antes de usar el robot real</li>
+                </ul>
+                <p><em>La simulación es una representación simplificada. No sustituye al robot real ni garantiza por sí sola que el movimiento sea alcanzable o seguro en la celda real.</em></p>
+
+                <hr style="margin:10px 0;">
+
+                <strong>¿Qué se compara con el robot real?</strong>
+                <p>Se compara:</p>
+                <ul>
+                  <li>el plan generado por la interfaz</li>
+                  <li>con los puntos reales alcanzados por el robot</li>
+                </ul>
+                <p><em>La comparación solo es válida si los datos reales pertenecen a la misma versión del programa.</em></p>
+                <p><em>La versión se identifica mediante el snapshot del programa y su ID corto de telemetría.</em></p>
+
+                <hr style="margin:10px 0;">
+
+                <strong>Guía rápida de uso</strong>
+                <p><strong>Simulación</strong></p>
+                <ol>
+                  <li>Crea el programa en la interfaz principal.</li>
+                  <li>Guarda el programa si quieres conservarlo.</li>
+                  <li>Pulsa "Simular".</li>
+                  <li>Revisa la trayectoria y la secuencia.</li>
+                </ol>
+                <p><strong>Robot real</strong></p>
+                <ol>
+                  <li>Activa la instrumentación en la interfaz principal.</li>
+                  <li>Genera el programa instrumentado.</li>
+                  <li>Comprueba que MQTT está conectado al broker/topic correcto.</li>
+                  <li>Ejecuta el programa en el robot real.</li>
+                  <li>La interfaz recibirá y guardará las ejecuciones reales compatibles.</li>
+                  <li>Pulsa "Comparar última ejecución con el plan actual".</li>
+                </ol>
+                <p><em>Las ejecuciones reales pueden recibirse y compararse más tarde, siempre que exista el plan/snapshot correspondiente.</em></p>
+
+                <hr style="margin:10px 0;">
+
+                <strong>Importante</strong>
+                <ul>
+                  <li>Para comparar no es obligatorio simular, pero sí debe existir un plan generado del programa.</li>
+                  <li>Si haces cambios en el programa, se genera una nueva versión.</li>
+                  <li>El nombre del programa no identifica la versión exacta.</li>
+                  <li>La comparación se basa en el snapshot y en el ID corto de telemetría.</li>
+                  <li>Si el robot envía datos de otro snapshot, la interfaz no debe mezclarlos con el plan actual.</li>
+                </ul>
+
+                <div style="text-align:right;margin-top:12px;">
+                  <button id="comparisonHelpModalCloseBottom" type="button" style="padding:5px 16px;border-radius:6px;border:1px solid #cbd5e1;background:#f1f5f9;cursor:pointer;">Cerrar</button>
+                </div>
+              </div>
+            </div>
+            <div id="comparisonRunInfo" style="margin: 4px 0 6px 0; font-size: 12px; color: #444;">Ninguna ejecución comparada</div>
+            <p class="orientation-note" title="Orientación no comparada (sim usa Euler grados vs UR3e axis-angle rad).">Orientación: N/A (no evaluada aún)</p>
+            <div id="comparison-global-status" class="comparison-global-status status-neutral">
+              ⚪ Sin comparación
+            </div>
+            <button id="toggleComparisonDetailsBtn" type="button">
+              ▼ Ver detalles de comparación
+            </button>
+            <div id="comparisonDetailsContainer">
+              <table id="comparison-table">
+                  <thead>
+                      <tr>
+                          <th>Paso</th>
+                          <th>Tipo</th>
+                          <th>Estado</th>
+                          <th>Zona</th>
+                          <th>Error Pos (mm)</th>
+                          <th>Orientación</th>
+                      </tr>
+                  </thead>
+                  <tbody id="comparison-tbody"></tbody>
+              </table>
+            </div>
+        </div>
+        
+        <!--SECCIÓN 406: Leyenda de Colores para los Tipos de Movimiento-->
+        <div id="legend">
+            <strong>Leyenda:</strong>
+            <div class="legend-item">
+                <span class="legend-color" style="background-color: #00ff00;"></span>
+                <span>MoveL (Lineal)</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-color" style="background-color: #0000ff;"></span>
+                <span>MoveJ (Articular)</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-color" style="background-color: #ff00ff;"></span>
+                <span>MoveC (Circular)</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-color" style="background-color: #000000;"></span>
+                <span>Punto de Parada</span>
+            </div>
+        </div>
+    </div>
+    <!--SECCIÓN 407: Panel de Entradas/Salidas Digitales y Analógicas-->
+    <div id="io-panel">
+        <h2>🔌 Panel I/O</h2>
+        
+        <!-- Entradas Digitales -->
+        <div class="io-section">
+            <h3>📥 Entradas Digitales (DI)</h3>
+            <p class="io-di-hint" style="font-size:11px;color:#666;margin:0 0 6px 0;line-height:1.3;">
+                Activa/desactiva antes o durante la simulación.<br>
+                El <em>while</em> evalúa la condición al inicio de cada ciclo.
+            </p>
+            <div class="io-grid">
+                <div class="io-item" data-type="DI" data-pin="1">
+                    <label>DI[1]</label>
+                    <input type="checkbox" class="io-switch" id="di1">
+                    <span class="di-state-label" id="di1-label">OFF</span>
+                </div>
+                <div class="io-item" data-type="DI" data-pin="2">
+                    <label>DI[2]</label>
+                    <input type="checkbox" class="io-switch" id="di2">
+                    <span class="di-state-label" id="di2-label">OFF</span>
+                </div>
+                <div class="io-item" data-type="DI" data-pin="3">
+                    <label>DI[3]</label>
+                    <input type="checkbox" class="io-switch" id="di3">
+                    <span class="di-state-label" id="di3-label">OFF</span>
+                </div>
+                <div class="io-item" data-type="DI" data-pin="4">
+                    <label>DI[4]</label>
+                    <input type="checkbox" class="io-switch" id="di4">
+                    <span class="di-state-label" id="di4-label">OFF</span>
+                </div>
+                <div class="io-item" data-type="DI" data-pin="5">
+                    <label>DI[5]</label>
+                    <input type="checkbox" class="io-switch" id="di5">
+                    <span class="di-state-label" id="di5-label">OFF</span>
+                </div>
+                <div class="io-item" data-type="DI" data-pin="6">
+                    <label>DI[6]</label>
+                    <input type="checkbox" class="io-switch" id="di6">
+                    <span class="di-state-label" id="di6-label">OFF</span>
+                </div>
+                <div class="io-item" data-type="DI" data-pin="7">
+                    <label>DI[7]</label>
+                    <input type="checkbox" class="io-switch" id="di7">
+                    <span class="di-state-label" id="di7-label">OFF</span>
+                </div>
+                <div class="io-item" data-type="DI" data-pin="8">
+                    <label>DI[8]</label>
+                    <input type="checkbox" class="io-switch" id="di8">
+                    <span class="di-state-label" id="di8-label">OFF</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Salidas Digitales -->
+        <div class="io-section">
+            <h3>📤 Salidas Digitales (DO)</h3>
+            <div class="io-grid">
+                <div class="io-item" data-type="DO" data-pin="1">
+                    <label>DO[1]</label>
+                    <div class="io-led" id="do1"></div>
+                </div>
+                <div class="io-item" data-type="DO" data-pin="2">
+                    <label>DO[2]</label>
+                    <div class="io-led" id="do2"></div>
+                </div>
+                <div class="io-item" data-type="DO" data-pin="3">
+                    <label>DO[3]</label>
+                    <div class="io-led" id="do3"></div>
+                </div>
+                <div class="io-item" data-type="DO" data-pin="4">
+                    <label>DO[4]</label>
+                    <div class="io-led" id="do4"></div>
+                </div>
+                <div class="io-item" data-type="DO" data-pin="5">
+                    <label>DO[5]</label>
+                    <div class="io-led" id="do5"></div>
+                </div>
+                <div class="io-item" data-type="DO" data-pin="6">
+                    <label>DO[6]</label>
+                    <div class="io-led" id="do6"></div>
+                </div>
+                <div class="io-item" data-type="DO" data-pin="7">
+                    <label>DO[7]</label>
+                    <div class="io-led" id="do7"></div>
+                </div>
+                <div class="io-item" data-type="DO" data-pin="8">
+                    <label>DO[8]</label>
+                    <div class="io-led" id="do8"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Entradas Analógicas -->
+        <div class="io-section">
+            <h3>📊 Entradas Analógicas (AI)</h3>
+            <div class="io-analog">
+                <div class="io-analog-item">
+                    <label>AI[1]</label>
+                    <input type="range" class="io-slider" id="ai1" min="0" max="10" step="0.1" value="0">
+                    <span class="io-value" id="ai1-value">0.0V</span>
+                </div>
+                <div class="io-analog-item">
+                    <label>AI[2]</label>
+                    <input type="range" class="io-slider" id="ai2" min="0" max="10" step="0.1" value="0">
+                    <span class="io-value" id="ai2-value">0.0V</span>
+                </div>
+                <div class="io-analog-item">
+                    <label>AI[3]</label>
+                    <input type="range" class="io-slider" id="ai3" min="0" max="10" step="0.1" value="0">
+                    <span class="io-value" id="ai3-value">0.0V</span>
+                </div>
+                <div class="io-analog-item">
+                    <label>AI[4]</label>
+                    <input type="range" class="io-slider" id="ai4" min="0" max="10" step="0.1" value="0">
+                    <span class="io-value" id="ai4-value">0.0V</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Salidas Analógicas -->
+        <div class="io-section">
+            <h3>📈 Salidas Analógicas (AO)</h3>
+            <div class="io-analog">
+                <div class="io-analog-item">
+                    <label>AO[1]</label>
+                    <div class="io-analog-bar">
+                        <div class="io-analog-fill" id="ao1-fill"></div>
+                    </div>
+                    <span class="io-value" id="ao1-value">0.0V</span>
+                </div>
+                <div class="io-analog-item">
+                    <label>AO[2]</label>
+                    <div class="io-analog-bar">
+                        <div class="io-analog-fill" id="ao2-fill"></div>
+                    </div>
+                    <span class="io-value" id="ao2-value">0.0V</span>
+                </div>
+                <div class="io-analog-item">
+                    <label>AO[3]</label>
+                    <div class="io-analog-bar">
+                        <div class="io-analog-fill" id="ao3-fill"></div>
+                    </div>
+                    <span class="io-value" id="ao3-value">0.0V</span>
+                </div>
+                <div class="io-analog-item">
+                    <label>AO[4]</label>
+                    <div class="io-analog-bar">
+                        <div class="io-analog-fill" id="ao4-fill"></div>
+                    </div>
+                    <span class="io-value" id="ao4-value">0.0V</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!--SECCIÓN 408: Contenedor para la Escena 3D (WebGL)-->
+    <div id="webgl-container"></div>
+
+    <!--SECCIÓN 409: Mapeo de Importaciones (Import Map) para Cargar Módulos de Three.js-->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.157.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.157.0/examples/jsm/"
+            }
+        }
+    </script>
+    
+    <!--SECCIÓN 410: Carga del Script Principal del Simulador (como módulo)-->
+    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+    <script src="telemetry.js"></script>
+    <script src="js/idb.js"></script>
+    <script src="js/compiler.js"></script>
+    <script type="module" src="simulator.js"></script>
+    <script>
+        window.addEventListener('load', () => {
+            if (window.TelemetryAPI?.connectMqttTelemetry) {
+                window.TelemetryAPI.connectMqttTelemetry();
+            }
+        });
+    </script>
+    <script>
+        if (localStorage.getItem("fp_debug") === "true") {
+            const script = document.createElement("script");
+            script.src = "dev/tests/sim_plannedsteps_fixture.js";
+            document.body.appendChild(script);
+
+            const testsBootstrap = document.createElement("script");
+            testsBootstrap.src = "tests/test_bootstrap.js";
+            document.body.appendChild(testsBootstrap);
+        }
+    </script>
+
+<script>
+(function() {
+  var btn = document.getElementById('comparisonHelpButton');
+  var modal = document.getElementById('comparisonHelpModal');
+  var closeBtn = document.getElementById('comparisonHelpModalClose');
+  var closeBottom = document.getElementById('comparisonHelpModalCloseBottom');
+  if (!btn || !modal) return;
+  function openModal() { modal.style.display = 'flex'; }
+  function closeModal() { modal.style.display = 'none'; }
+  btn.addEventListener('click', openModal);
+  closeBtn.addEventListener('click', closeModal);
+  closeBottom.addEventListener('click', closeModal);
+  modal.addEventListener('click', function(e) { if (e.target === modal) closeModal(); });
+  document.addEventListener('keydown', function(e) { if (e.key === 'Escape' && modal.style.display === 'flex') closeModal(); });
+})();
+</script>
+</body>
+</html>

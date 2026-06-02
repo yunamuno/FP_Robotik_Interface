@@ -1,0 +1,563 @@
+/* Sección 600: Variables Globales de Estilo (Root) */
+:root {
+  --accent-color: #007bff;
+  --success-color: #28a745;
+  --panel-bg: rgba(255, 255, 255, 0.9);
+  --border-color: #e0e0e0;
+  --radius: 8px;
+}
+
+/* Sección 601: Estilos Globales (Body) */
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  color: #333;
+  overflow: hidden;
+}
+
+/* Sección 602: Contenedor WebGL (Fondo) */
+#webgl-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1;
+}
+
+/* Sección 603: Panel Flotante de Información */
+#info-panel {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 2;
+  background: var(--panel-bg);
+  padding: 15px 20px;
+  border-radius: var(--radius);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  border: 1px solid var(--border-color);
+  width: 350px;  /* Ancho fijo en lugar de max-width */
+  min-height: 400px; /* Altura mínima fija */
+  max-height: calc(100vh - 40px); /* Evita que se salga de la pantalla */
+  height: auto; /* Se expandirá si el contenido es más grande */
+  overflow-y: auto; /* Permite ver filas largas en comparación */
+}
+
+/* Sección 604: Título del Panel */
+h1 { font-size: 1.4rem; margin: 0 0 10px 0; }
+
+/* Sección 605: Contenedor de Botones */
+#controls {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+/* Sección 606: Estilo General de Botones */
+button {
+  padding: 10px 15px;
+  font-size: 0.95rem;
+  border: none;
+  border-radius: var(--radius);
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+/* Sección 607: Estilos Específicos de Botones */
+#runSimulationBtn { background-color: var(--accent-color); }
+#runSimulationBtn:hover { background-color: #0056b3; }
+#clearTrajectoryBtn { background-color: #6c757d; }
+#clearTrajectoryBtn:hover { background-color: #5a6268; }
+
+/* Sección 608: Indicador de Estado */
+#status {
+  font-size: 0.9rem;
+  padding-top: 10px;
+  border-top: 1px solid var(--border-color);
+}
+
+/* Sección 608b: Estilos para el Texto de Estado */
+#status-text {
+  font-family: 'Courier New', Courier, monospace;
+  white-space: pre-wrap;
+  height: 200px;
+  overflow-y: auto;
+  margin-top: 10px;
+  padding: 5px;
+  border: 1px solid var(--border-color);
+  border-radius: calc(var(--radius) / 2);
+}
+
+.status-line {
+  display: block;
+  padding: 2px 4px;
+  line-height: 1.4;
+}
+
+.status-line-primary {
+  display: block;
+}
+
+.status-line-secondary {
+  display: block;
+  margin-top: 2px;
+  font-size: 0.92em;
+  opacity: 0.78;
+  font-weight: 400;
+}
+
+.status-line.active {
+  font-weight: bold;
+  background-color: rgba(0, 123, 255, 0.1);
+  border-radius: 3px;
+}
+
+.status-line.completed {
+  color: #666;
+}
+
+/* Sección 609b: Panel de Comparación y Tabla */
+#comparison-panel {
+  margin-top: 12px;
+  padding: 10px;
+  border: 1px solid var(--border-color);
+  border-radius: calc(var(--radius) / 2);
+  background-color: rgba(240, 240, 240, 0.5);
+  font-size: 0.85rem;
+  max-height: 250px; /* Limita la altura para tablas largas */
+  overflow-y: auto;
+}
+
+#comparison-panel strong {
+  display: block;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.comparison-secondary-title {
+  margin: 8px 0 4px 0;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  border-top: 1px solid #d0d0d0;
+  padding-top: 8px;
+}
+
+.orientation-note {
+  margin: 5px 0 10px 0;
+  font-size: 0.75rem;
+  color: #666;
+  font-style: italic;
+  cursor: help;
+  border-bottom: 1px dotted #999;
+  padding-bottom: 2px;
+}
+
+.comparison-global-status {
+  margin: 6px 0 8px 0;
+  padding: 8px 10px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  border-left: 4px solid transparent;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#toggleComparisonDetailsBtn {
+  margin: 0 0 8px 0;
+  padding: 5px 9px;
+  border: 1px solid #d5d9de;
+  border-radius: 6px;
+  background: rgba(108, 117, 125, 0.08);
+  color: #495057;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+#toggleComparisonDetailsBtn:hover {
+  background: rgba(108, 117, 125, 0.14);
+}
+
+.robot-live-status {
+  margin: 6px 0 10px 0;
+  padding: 8px 10px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.robot-live-status.idle {
+  background: rgba(108,117,125,0.10);
+  color: #666;
+  border-left: 4px solid #6c757d;
+}
+
+.robot-live-status.receiving {
+  background: rgba(255,193,7,0.12);
+  color: #856404;
+  border-left: 4px solid #ffc107;
+}
+
+.robot-live-status.received {
+  background: rgba(40,167,69,0.12);
+  color: #1e7e34;
+  border-left: 4px solid #28a745;
+}
+
+#btnCompareMqttRun,
+#btnCompareSelectedRun {
+  margin: 2px 0;
+  padding: 6px 10px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  background: #f1f3f5;
+  color: #2f3a45;
+  border: 1px solid #cfd6dd;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+#btnCompareMqttRun:hover,
+#btnCompareSelectedRun:hover {
+  background: #e2e8ee;
+  border-color: #b8c2cc;
+  color: #24303b;
+}
+
+#comparisonDetailsContainer {
+  display: none;
+}
+
+.status-neutral {
+  background: rgba(108,117,125,0.12);
+  border-left-color: #6c757d;
+  color: #555;
+}
+
+.status-global-ok {
+  background: rgba(40,167,69,0.12);
+  border-left-color: #28a745;
+  color: #1e7e34;
+}
+
+.status-global-warning {
+  background: rgba(255,193,7,0.12);
+  border-left-color: #ffc107;
+  color: #856404;
+}
+
+.status-global-error {
+  background: rgba(220,53,69,0.12);
+  border-left-color: #dc3545;
+  color: #842029;
+}
+
+#comparison-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.75rem;
+}
+
+#comparison-table thead {
+  background-color: rgba(0, 123, 255, 0.1);
+  font-weight: 600;
+}
+
+#comparison-table th,
+#comparison-table td {
+  padding: 4px 6px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+#comparison-table th {
+  font-size: 0.7rem;
+  color: #333;
+}
+
+/* Estilos de estado (semáforo) */
+.status-ok {
+  background-color: rgba(40, 167, 69, 0.1);
+  color: #28a745;
+  font-weight: 600;
+}
+
+.status-warning {
+  background-color: rgba(255, 193, 7, 0.1);
+  color: #ffc107;
+  font-weight: 600;
+}
+
+.status-nok {
+  background-color: rgba(220, 53, 69, 0.1);
+  color: #dc3545;
+  font-weight: 600;
+}
+
+.status-pendiente {
+  background-color: rgba(108, 117, 125, 0.1);
+  color: #6c757d;
+  font-style: italic;
+}
+
+#comparison-table tr:hover {
+  background-color: rgba(0, 123, 255, 0.05);
+}
+
+/* Sección 609: Indicador de Bloque Actual */
+#current-block-display {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border-color);
+  font-size: 0.85em;
+  font-family: 'Courier New', Courier, monospace;
+}
+#current-block-text {
+  color: var(--accent-color);
+  font-weight: bold;
+}
+
+/* Sección 610: Estilos de la Leyenda */
+/* ===== NUEVOS ESTILOS PARA LA LEYENDA ===== */
+#legend {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border-color);
+  font-size: 0.85rem;
+}
+#legend strong {
+  display: block;
+  margin-bottom: 5px;
+}
+
+/* Sección 611: Ítems de la Leyenda */
+.legend-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+/* Sección 612: Indicador de Color de la Leyenda */
+.legend-color {
+  width: 15px;
+  height: 15px;
+  margin-right: 8px;
+  border: 1px solid rgba(0,0,0,0.2);
+}
+
+/* Sección 613: Indicador de Punto de Parada (Círculo) */
+.legend-point {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #000;
+}
+
+/* Sección 614: Panel de I/O */
+#io-panel {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 2;
+  background: var(--panel-bg);
+  padding: 15px 20px;
+  border-radius: var(--radius);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  border: 1px solid var(--border-color);
+  width: 280px;
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
+}
+
+#io-panel h2 {
+  font-size: 1.2rem;
+  margin: 0 0 15px 0;
+  color: #333;
+}
+
+/* Sección 615: Secciones de I/O */
+.io-section {
+  margin-bottom: 15px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.io-section:last-child {
+  border-bottom: none;
+}
+
+.io-section h3 {
+  font-size: 0.9rem;
+  margin: 0 0 10px 0;
+  color: #555;
+  font-weight: 600;
+}
+
+/* Sección 616: Grid de I/O Digitales */
+.io-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.io-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 10px;
+  background: #f8f9fa;
+  border-radius: 5px;
+  border: 1px solid #e0e0e0;
+}
+
+.io-item label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #555;
+  font-family: 'Courier New', monospace;
+}
+
+/* Sección 617: Switches de Entradas Digitales */
+.io-switch {
+  width: 40px;
+  height: 20px;
+  cursor: pointer;
+  appearance: none;
+  background: #ccc;
+  border-radius: 10px;
+  position: relative;
+  transition: background 0.3s;
+}
+
+.io-switch:checked {
+  background: var(--success-color);
+}
+
+.io-switch::before {
+  content: '';
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: white;
+  top: 2px;
+  left: 2px;
+  transition: transform 0.3s;
+}
+
+.io-switch:checked::before {
+  transform: translateX(20px);
+}
+
+/* Etiqueta ON/OFF junto al switch de DI */
+.di-state-label {
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: #9ca3af;
+  font-family: 'Courier New', monospace;
+  min-width: 26px;
+  text-align: right;
+  transition: color 0.2s, font-weight 0.2s;
+}
+
+/* Sección 618: LEDs de Salidas Digitales */
+.io-led {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #ddd;
+  border: 2px solid #999;
+  transition: all 0.3s;
+}
+
+.io-led.active {
+  background: #00ff00;
+  border-color: #00cc00;
+  box-shadow: 0 0 10px #00ff00;
+}
+
+/* Sección 619: I/O Analógicas */
+.io-analog {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.io-analog-item {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.io-analog-item label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #555;
+  font-family: 'Courier New', monospace;
+}
+
+/* Sección 620: Sliders de Entradas Analógicas */
+.io-slider {
+  width: 100%;
+  height: 6px;
+  border-radius: 3px;
+  background: #ddd;
+  outline: none;
+  cursor: pointer;
+}
+
+.io-slider::-webkit-slider-thumb {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--accent-color);
+  cursor: pointer;
+}
+
+.io-slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--accent-color);
+  cursor: pointer;
+  border: none;
+}
+
+/* Sección 621: Barras de Salidas Analógicas */
+.io-analog-bar {
+  width: 100%;
+  height: 20px;
+  background: #e0e0e0;
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+}
+
+.io-analog-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #00ff00, #ffff00, #ff0000);
+  transition: width 0.3s;
+}
+
+/* Sección 622: Valores de I/O Analógicas */
+.io-value {
+  font-size: 0.75rem;
+  color: #666;
+  font-family: 'Courier New', monospace;
+  text-align: right;
+}
+
+.legend-point {
+  border-radius: 50%;
+}
